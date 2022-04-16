@@ -41,9 +41,8 @@ def read2(file, pageNumber):
     resized = cropped.resize((new_width, new_height), Image.NEAREST)
     #print('width:', resized.width, 'height:', resized.height)
     image_arr = np.array(resized)
-    image_arr = image_arr[730:image.height, 1500:1900]
+    image_arr = image_arr[730:image.height*2, 1500:1900]
     image = Image.fromarray(image_arr)
-
     im2 = prepare(image)
 
     results = pytesseract.image_to_string(im2, config=config)
@@ -51,6 +50,7 @@ def read2(file, pageNumber):
     out = [i for i in a_list if i]
     out.remove('\x0c')
     out = [value.replace(',', '.').replace('%', '') for value in out]
+    out = out[:-2]
     for index, value in enumerate(out):
         if len(value) != 5:
             print('ALERT!!!', index, value)
