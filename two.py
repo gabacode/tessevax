@@ -14,17 +14,10 @@ config = r'--oem 3 --psm 12 -c tessedit_char_whitelist=0123456789,%'
 
 def prepare(image):
     image = image.convert('L')
-    #image = image.point(lambda x: 0 if x < 100 else 255, '1')
-    image = image.filter(ImageFilter.MinFilter(1))
     image = image.filter(ImageFilter.SMOOTH_MORE)
-    image = image.filter(ImageFilter.SMOOTH_MORE)
-    contrast = ImageEnhance.Contrast(image)
-    image = contrast.enhance(8)
-    image = image.filter(ImageFilter.SHARPEN)
-    image = image.filter(ImageFilter.MinFilter(3))
     image = ImageOps.invert(image)
-    #brightness = ImageEnhance.Brightness(image)
-    #image = brightness.enhance(2)
+    brightness = ImageEnhance.Brightness(image)
+    image = brightness.enhance(1.2)
     return image
 
 
@@ -52,10 +45,10 @@ def read2(file, pageNumber):
     a_list = results.split('\n')
     out = [i for i in a_list if i]
     out.remove('\x0c')
+    out = [value.replace(',', '.').replace('%', '') for value in out]
     for index, value in enumerate(out):
         if len(value) < 5:
-            print('ALERT')
-            print(index, value)
+            print('ALERT', index, value)
     it = iter(out)
     data = list(zip(it, it))
     for tuple_ in data:
@@ -63,4 +56,4 @@ def read2(file, pageNumber):
     im2.show()
 
 
-read2('./data/report.pdf', 6)
+read2('./data/report.pdf', 2)
